@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hashim | Admin Dashboard</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --outer: #D8C2A8;
+    --cream: #F7F2EA;
+    --light: #E8D9C6;
+    --mocha: #A98B70;
+    --terracotta: #D68A72;
+    --brown: #40352D;
+    --dark-brown: #2D241E;
+    --text: #40352D;
+    --muted: #897766;
+    --border: #D7C5B1;
+}
+
+body {
+    background: var(--outer);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 22px 7%;
+    background: var(--cream);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.logo span {
+    color: var(--terracotta);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+header a {
+    color: var(--brown);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.language-button {
+    background: transparent;
+    color: var(--brown);
+    border: 1px solid var(--mocha);
+    padding: 9px 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 45px 7%;
+}
+
+.welcome {
+    margin-bottom: 35px;
+}
+
+.welcome h1 {
+    font-size: 36px;
+    margin-bottom: 12px;
+    color: var(--brown);
+}
+
+.welcome p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.panel {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(64, 53, 45, 0.06);
+}
+
+.panel h2 {
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: var(--brown);
+}
+
+.panel h3 {
+    color: var(--brown);
+}
+
+.section-title {
+    margin: 28px 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--brown);
+    font-size: 17px;
+}
+
+label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--brown);
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 18px;
+    background: #FFFCF8;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: inherit;
+    outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--mocha);
+    box-shadow: 0 0 0 2px rgba(169, 139, 112, 0.12);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.upload-area {
+    border: 2px dashed var(--mocha);
+    padding: 30px 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    cursor: pointer;
+    background: #EFE5D8;
+}
+
+.upload-area:hover {
+    background: #E8D9C6;
+}
+
+.upload-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.upload-area p {
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+#fileInput {
+    display: none;
+}
+
+button {
+    font-family: inherit;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 15px;
+    background: var(--brown);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: 0.2s;
+}
+
+.submit-button:hover {
+    background: var(--dark-brown);
+}
+
+.submit-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancel-edit {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: var(--light);
+    color: var(--brown);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.work-card {
+    background: #FFFCF8;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.work-card img,
+.work-card video {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    background: var(--light);
+}
+
+.work-info {
+    padding: 15px;
+}
+
+.work-info h3 {
+    margin-bottom: 8px;
+    font-size: 17px;
+}
+
+.work-info p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.card-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.edit-button,
+.delete-button {
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.edit-button {
+    background: var(--mocha);
+    color: white;
+}
+
+.edit-button:hover {
+    background: var(--brown);
+}
+
+.delete-button {
+    background: #B66B5B;
+    color: white;
+}
+
+.delete-button:hover {
+    background: #984F40;
+}
+
+.empty-state {
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 10px;
+    grid-column: 1 / -1;
+    line-height: 1.8;
+}
+
+.note {
+    margin-top: 20px;
+    padding: 15px;
+    background: #EFE5D8;
+    color: var(--brown);
+    font-size: 13px;
+    line-height: 1.8;
+    border-left: 3px solid var(--terracotta);
+    border-radius: 4px;
+}
+
+/* Equipment */
+
+.equipment-item {
+    background: #EFE5D8;
+    border: 1px solid var(--border);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.equipment-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.equipment-item-header strong {
+    color: var(--brown);
+}
+
+.remove-equipment-button {
+    background: #B66B5B;
+    color: white;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.equipment-item input,
+.equipment-item select {
+    margin-bottom: 12px;
+}
+
+.add-equipment-button {
+    width: 100%;
+    padding: 12px;
+    background: var(--light);
+    color: var(--brown);
+    border: 1px solid var(--mocha);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.add-equipment-button:hover {
+    background: #DCC7AF;
+}
+
+body.rtl {
+    direction: rtl;
+}
+
+body.rtl header {
+    direction: rtl;
+}
+
+body.rtl .note {
+    border-left: none;
+    border-right: 3px solid var(--terracotta);
+}
+
+body.rtl .welcome,
+body.rtl .panel {
+    text-align: right;
+}
+
+body.rtl .upload-area {
+    direction: rtl;
+}
+
+body.rtl .equipment-item-header {
+    direction: rtl;
+}
+
+@media(max-width: 1000px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 600px) {
+    header {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .container {
+        padding: 30px 5%;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome h1 {
+        font-size: 28px;
+    }
+}
+
+/* ADMIN AUTH */
+#loginScreen {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 35px 5%;
+}
+
+.login-card {
+    width: min(100%, 430px);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 35px;
+    box-shadow: 0 8px 25px rgba(64, 53, 45, 0.08);
+}
+
+.login-card h1 {
+    color: var(--brown);
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+#loginMessage {
+    color: #B66B5B;
+    font-size: 14px;
+    min-height: 20px;
+    margin-top: 10px;
+}
+
+#logoutButton {
+    display: none;
+    border: 1px solid var(--mocha);
+    background: transparent;
+    color: var(--brown);
+    padding: 9px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">HASHIM<span>.</span></div>
+
+    <div class="header-actions">
+        <button id="logoutButton" type="button" onclick="logoutAdmin()">Logout</button>
+        <button class="language-button"
+                onclick="toggleLanguage()"
+                id="languageButton">AR</button>
+
+        <a href="index.html" data-translate="backToWebsite">
+            Back to Website ↗
+        </a>
+    </div>
+</header>
+
+
+<div id="loginScreen">
+    <div class="login-card">
+        <h1>Admin Login</h1>
+        <p>Please sign in with your admin email and password to manage the portfolio.</p>
+        <form id="loginForm">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" autocomplete="username" required placeholder="Admin email">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" autocomplete="current-password" required placeholder="Password">
+            <button class="submit-button" id="loginButton" type="submit">Login</button>
+            <div id="loginMessage" role="status"></div>
+        </form>
+    </div>
+</div>
+
+<div class="container" id="adminDashboard" style="display:none;">
+
+    <div class="welcome">
+        <h1 data-translate="welcomeTitle">Welcome, Hashim</h1>
+        <p data-translate="welcomeDescription">
+            Manage your portfolio and creative projects.
+        </p>
+    </div>
+
+    <div class="dashboard">
+
+        <!-- PROJECT FORM -->
+        <div class="panel">
+
+            <h2 data-translate="uploadTitle">Add New Project</h2>
+
+            <label data-translate="workTitleLabel">Project Title</label>
+
+            <input type="text"
+                   id="title"
+                   placeholder="Project title"
+                   data-placeholder="titlePlaceholder">
+
+            <label data-translate="descriptionLabel">Short Description</label>
+
+            <textarea id="description"
+                      placeholder="Write a short description..."
+                      data-placeholder="descriptionPlaceholder"></textarea>
+
+            <label data-translate="categoryLabel">Project Type</label>
+
+            <select id="category">
+                <option value="Wedding" data-translate="wedding">Wedding</option>
+                <option value="Documentary" data-translate="documentary">Documentary</option>
+                <option value="Advertising" data-translate="advertising">Advertising</option>
+                <option value="Event" data-translate="event">Event</option>
+                <option value="Photography" data-translate="photography">Photography</option>
+                <option value="Film" data-translate="film">Film</option>
+                <option value="iPhone Videography" data-translate="iphone">iPhone Videography</option>
+                <option value="Other" data-translate="other">Other</option>
+            </select>
+
+            <h3 class="section-title" data-translate="projectInfo">
+                Project Information
+            </h3>
+
+            <label data-translate="projectDate">Project Date</label>
+            <input type="date" id="projectDate">
+
+            <label data-translate="projectLocation">Location</label>
+
+            <input type="text"
+                   id="projectLocation"
+                   placeholder="Project location"
+                   data-placeholder="locationPlaceholder">
+
+            <label data-translate="clientName">Client Name</label>
+
+            <input type="text"
+                   id="clientName"
+                   placeholder="Client name"
+                   data-placeholder="clientPlaceholder">
+
+            <h3 class="section-title" data-translate="projectStoryTitle">
+                Project Story
+            </h3>
+
+            <label data-translate="projectStory">Story</label>
+
+            <textarea id="projectStory"
+                      placeholder="Tell the story of this project..."
+                      data-placeholder="storyPlaceholder"></textarea>
+
+            <label data-translate="projectIdea">Project Idea</label>
+
+            <textarea id="projectIdea"
+                      placeholder="What was the idea behind the project?"
+                      data-placeholder="ideaPlaceholder"></textarea>
+
+            <label data-translate="creativeVision">Creative Vision</label>
+
+            <textarea id="creativeVision"
+                      placeholder="Describe your creative vision..."
+                      data-placeholder="visionPlaceholder"></textarea>
+
+            <label data-translate="behindScenes">Behind the Scenes</label>
+
+            <textarea id="behindScenes"
+                      placeholder="Behind the scenes details..."
+                      data-placeholder="behindPlaceholder"></textarea>
+
+            <label data-translate="challenges">Challenges</label>
+
+            <textarea id="challenges"
+                      placeholder="Challenges faced during the project..."
+                      data-placeholder="challengesPlaceholder"></textarea>
+
+            <label data-translate="specialMoments">Special Moments</label>
+
+            <textarea id="specialMoments"
+                      placeholder="Special moments..."
+                      data-placeholder="momentsPlaceholder"></textarea>
+
+            <!-- EQUIPMENT SECTION -->
+
+            <h3 class="section-title" data-translate="equipmentTitle">
+                Equipment Used
+            </h3>
+
+            <div id="equipmentContainer"></div>
+
+            <button type="button"
+                    class="add-equipment-button"
+                    onclick="addEquipmentRow()"
+                    data-translate="addEquipment">
+                + Add Equipment
+            </button>
+
+            <!-- MEDIA SECTION -->
+                         <h3 class="section-title" data-translate="mediaTitle">
+                Project Media
+            </h3>
+
+            <label data-translate="mediaLabel">Photos or Videos</label>
+
+            <div class="upload-area"
+                 onclick="document.getElementById('fileInput').click()">
+
+                <div class="upload-icon">📸</div>
+
+                <p data-translate="uploadText">
+                    Click here to select photos or videos
+                </p>
+
+                <p data-translate="uploadHint">
+                    You can select multiple files
+                </p>
+            </div>
+
+            <input type="file"
+                   id="fileInput"
+                   accept="image/*,video/*"
+                   multiple>
+
+            <button class="submit-button"
+                    onclick="addWork()"
+                    id="submitButton"
+                    data-translate="addButton">
+                Add Project
+            </button>
+
+            <button class="cancel-edit"
+                    id="cancelEditButton"
+                    onclick="cancelEditing()"
+                    data-translate="cancelEdit">
+                Cancel Editing
+            </button>
+
+            <div class="note" data-translate="noteText">
+                Your project media and information are stored online.
+            </div>
+
+        </div>
+
+        <!-- PORTFOLIO -->
+
+        <div class="panel">
+
+            <h2 data-translate="portfolioTitle">My Portfolio</h2>
+
+            <div class="gallery" id="gallery">
+                <div class="empty-state" data-translate="loading">
+                    Loading portfolio...
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+
+<script>
+
+let selectedFiles = [];
+let currentLanguage = "en";
+let editingWorkId = null;
+
+const translations = {
+
+en: {
+    backToWebsite: "Back to Website ↗",
+    welcomeTitle: "Welcome, Hashim",
+    welcomeDescription: "Manage your portfolio and creative projects.",
+    uploadTitle: "Add New Project",
+    workTitleLabel: "Project Title",
+    titlePlaceholder: "Project title",
+    descriptionLabel: "Short Description",
+    descriptionPlaceholder: "Write a short description...",
+    categoryLabel: "Project Type",
+    wedding: "Wedding",
+    documentary: "Documentary",
+    advertising: "Advertising",
+    event: "Event",
+    photography: "Photography",
+    film: "Film",
+    iphone: "iPhone Videography",
+    other: "Other",
+    projectInfo: "Project Information",
+    projectDate: "Project Date",
+    projectLocation: "Location",
+    locationPlaceholder: "Project location",
+    clientName: "Client Name",
+    clientPlaceholder: "Client name",
+    projectStoryTitle: "Project Story",
+    projectStory: "Story",
+    storyPlaceholder: "Tell the story of this project...",
+    projectIdea: "Project Idea",
+    ideaPlaceholder: "What was the idea behind the project?",
+    creativeVision: "Creative Vision",
+    visionPlaceholder: "Describe your creative vision...",
+    behindScenes: "Behind the Scenes",
+    behindPlaceholder: "Behind the scenes details...",
+    challenges: "Challenges",
+    challengesPlaceholder: "Challenges faced during the project...",
+    specialMoments: "Special Moments",
+    momentsPlaceholder: "Special moments...",
+    equipmentTitle: "Equipment Used",
+    addEquipment: "+ Add Equipment",
+    equipmentName: "Equipment Name",
+    equipmentPlaceholder: "Camera / Lens / Lighting...",
+    equipmentType: "Equipment Type",
+    camera: "Camera",
+    lens: "Lens",
+    lighting: "Lighting",
+    audio: "Audio",
+    equipmentOther: "Other",
+    equipmentNotes: "Equipment Notes",
+    equipmentNotesPlaceholder: "Optional notes",
+    removeEquipment: "Remove",
+    mediaTitle: "Project Media",
+    mediaLabel: "Photos or Videos",
+    uploadText: "Click here to select photos or videos",
+    uploadHint: "You can select multiple files",
+    addButton: "Add Project",
+    updateButton: "Update Project Details",
+    cancelEdit: "Cancel Editing",
+    noteText: "Your project media and information are stored online.",
+    portfolioTitle: "My Portfolio",
+    loading: "Loading portfolio...",
+    emptyState: "No work added yet. Upload your first project!",
+    selectTitle: "Please enter a project title.",
+    selectFiles: "Please select at least one photo or video.",
+    addedMessage: "Project added successfully!",
+    updatedMessage: "Project details updated!",
+    deleteButton: "Delete Work",
+    editButton: "Edit Project Details",
+    deleteConfirm: "Are you sure you want to delete this work? This cannot be undone.",
+    fileCount: "Selected files: ",
+    loadError: "Could not load portfolio. Please refresh.",
+    deleteError: "Could not delete this work.",
+    uploadError: "Upload failed. Please try again.",
+    uploading: "Uploading..."
+},
+
+ar: {
+    backToWebsite: "العودة إلى الموقع ↗",
+    welcomeTitle: "أهلًا هاشم",
+    welcomeDescription: "أدِر معرض أعمالك ومشاريعك الإبداعية.",
+    uploadTitle: "إضافة مشروع جديد",
+    workTitleLabel: "عنوان المشروع",
+    titlePlaceholder: "عنوان المشروع",
+    descriptionLabel: "وصف مختصر",
+    descriptionPlaceholder: "اكتب وصفًا مختصرًا...",
+    categoryLabel: "نوع المشروع",
+    wedding: "أعراس",
+    documentary: "أفلام وثائقية",
+    advertising: "إعلانات",
+    event: "فعاليات",
+    photography: "تصوير فوتوغرافي",
+    film: "أفلام",
+    iphone: "تصوير iPhone",
+    other: "أخرى",
+    projectInfo: "معلومات المشروع",
+    projectDate: "تاريخ المشروع",
+    projectLocation: "الموقع",
+    locationPlaceholder: "مكان المشروع",
+    clientName: "اسم العميل",
+    clientPlaceholder: "اسم العميل",
+    projectStoryTitle: "قصة المشروع",
+    projectStory: "القصة",
+    storyPlaceholder: "احكي قصة المشروع...",
+    projectIdea: "فكرة المشروع",
+    ideaPlaceholder: "ما هي فكرة المشروع؟",
+    creativeVision: "الرؤية الإبداعية",
+    visionPlaceholder: "صف رؤيتك الإبداعية...",
+    behindScenes: "خلف الكواليس",
+    behindPlaceholder: "تفاصيل خلف الكواليس...",
+    challenges: "التحديات",
+    challengesPlaceholder: "التحديات التي واجهتك...",
+    specialMoments: "لحظات مميزة",
+    momentsPlaceholder: "اللحظات المميزة...",
+    equipmentTitle: "المعدات المستخدمة",
+    addEquipment: "+ إضافة معدات",
+    equipmentName: "اسم المعدات",
+    equipmentPlaceholder: "كاميرا / عدسة / إضاءة...",
+    equipmentType: "نوع المعدات",
+    camera: "كاميرا",
+    lens: "عدسة",
+    lighting: "إضاءة",
+    audio: "صوت",
+    equipmentOther: "أخرى",
+    equipmentNotes: "ملاحظات المعدات",
+    equipmentNotesPlaceholder: "ملاحظات اختيارية",
+    removeEquipment: "حذف",
+    mediaTitle: "ملفات المشروع",
+    mediaLabel: "صور أو فيديوهات",
+    uploadText: "اضغط هنا لاختيار الصور أو الفيديوهات",
+    uploadHint: "يمكنك اختيار أكثر من ملف",
+    addButton: "إضافة المشروع",
+    updateButton: "تحديث تفاصيل المشروع",
+    cancelEdit: "إلغاء التعديل",
+    noteText: "يتم حفظ ملفات ومعلومات المشروع على الإنترنت.",
+    portfolioTitle: "معرض أعمالي",
+    loading: "جاري تحميل الأعمال...",
+    emptyState: "لم تتم إضافة أعمال بعد. أضف أول مشروع!",
+    selectTitle: "يرجى كتابة عنوان المشروع.",
+    selectFiles: "يرجى اختيار صورة أو فيديو واحد على الأقل.",
+    addedMessage: "تمت إضافة المشروع بنجاح!",
+    updatedMessage: "تم تحديث تفاصيل المشروع!",
+    deleteButton: "حذف العمل",
+    editButton: "تعديل تفاصيل المشروع",
+    deleteConfirm: "هل أنت متأكد من حذف هذا العمل؟ لا يمكن التراجع.",
+    fileCount: "عدد الملفات المختارة: ",
+    loadError: "تعذّر تحميل الأعمال. حدّث الصفحة.",
+    deleteError: "تعذّر حذف العمل.",
+    uploadError: "فشل الرفع. حاول مرة ثانية.",
+    uploading: "جاري الرفع..."
+}
+
+};
+
+/* LANGUAGE */
+
+function toggleLanguage() {
+
+    const equipmentData = getEquipmentObject();
+
+    currentLanguage = currentLanguage === "en" ? "ar" : "en";
+
+    const lang = translations[currentLanguage];
+
+    document.documentElement.lang = currentLanguage;
+
+    document.documentElement.dir =
+        currentLanguage === "ar" ? "rtl" : "ltr";
+
+    document.body.classList.toggle(
+        "rtl",
+        currentLanguage === "ar"
+    );
+
+    document.getElementById("languageButton").textContent =
+        currentLanguage === "en" ? "AR" : "EN";
+
+    document.querySelectorAll("[data-translate]").forEach(el => {
+
+        const key = el.getAttribute("data-translate");
+
+        if (lang[key]) {
+            el.textContent = lang[key];
+        }
+
+    });
+
+    document.querySelectorAll("[data-placeholder]").forEach(el => {
+
+        const key = el.getAttribute("data-placeholder");
+
+        if (lang[key]) {
+            el.placeholder = lang[key];
+        }
+
+    });
+
+    // Re-render equipment using the new language
+    document.getElementById("equipmentContainer").innerHTML = "";
+
+    if (equipmentData.length > 0) {
+        equipmentData.forEach(item => addEquipmentRow(item));
+    } else {
+        addEquipmentRow();
+    }
+
+    updateFileText();
+    loadWorks();
+}
+
+/* FILE INPUT */
+
+document.getElementById("fileInput").addEventListener("change", function() {
+
+    selectedFiles = Array.from(this.files);
+
+    updateFileText();
+
+});
+
+function updateFileText() {
+
+    const text = document.querySelector(".upload-area p");
+
+    if (!selectedFiles.length) {
+
+        text.textContent =
+            translations[currentLanguage].uploadText;
+
+    } else {
+
+        text.textContent =
+            translations[currentLanguage].fileCount +
+            selectedFiles.length;
+
+    }
+}
+
+/* STORAGE PATH */
+
+function getStoragePath(mediaUrl) {
+
+    try {
+
+        const url = new URL(mediaUrl);
+
+        const marker =
+            "/storage/v1/object/public/portfolio-media/";
+
+        const index = url.pathname.indexOf(marker);
+
+        if (index === -1) return null;
+
+        return decodeURIComponent(
+            url.pathname.substring(index + marker.length)
+        );
+
+    } catch (e) {
+
+        return null;
+
+    }
+}
+
+/* EQUIPMENT */
+
+function getEquipmentObject() {
+
+    const items = [];
+
+    document.querySelectorAll(".equipment-item").forEach(item => {
+
+        const name =
+            item.querySelector(".equipment-name").value.trim();
+
+        const type =
+            item.querySelector(".equipment-type").value;
+
+        const notes =
+            item.querySelector(".equipment-notes").value.trim();
+
+        if (name) {
+
+            items.push({
+                name: name,
+                type: type,
+                notes: notes
+            });
+
+        }
+
+    });
+
+    return items;
+}
+
+function addEquipmentRow(equipment = {}) {
+
+    const container =
+        document.getElementById("equipmentContainer");
+
+    const item = document.createElement("div");
+
+    item.className = "equipment-item";
+
+    const type = equipment.type || "Camera";
+    const name = equipment.name || "";
+    const notes = equipment.notes || "";
+
+    const isArabic = currentLanguage === "ar";
+
+    item.innerHTML = `
+
+        <div class="equipment-item-header">
+
+            <strong>
+                ${isArabic ? "معدات المشروع" : "Project Equipment"}
+            </strong>
+
+            <button type="button"
+                    class="remove-equipment-button"
+                    onclick="removeEquipmentRow(this)">
+
+                ${translations[currentLanguage].removeEquipment}
+
+            </button>
+
+        </div>
+
+        <label>
+            ${translations[currentLanguage].equipmentName}
+        </label>
+
+        <input type="text"
+               class="equipment-name"
+               value="${escapeHTML(name)}"
+               placeholder="${translations[currentLanguage].equipmentPlaceholder}">
+
+        <label>
+            ${translations[currentLanguage].equipmentType}
+        </label>
+
+        <select class="equipment-type">
+
+            <option value="Camera" ${type === "Camera" ? "selected" : ""}>
+                ${translations[currentLanguage].camera}
+            </option>
+
+            <option value="Lens" ${type === "Lens" ? "selected" : ""}>
+                ${translations[currentLanguage].lens}
+            </option>
+
+            <option value="Lighting" ${type === "Lighting" ? "selected" : ""}>
+                ${translations[currentLanguage].lighting}
+            </option>
+
+            <option value="Audio" ${type === "Audio" ? "selected" : ""}>
+                ${translations[currentLanguage].audio}
+            </option>
+
+            <option value="Other" ${type === "Other" ? "selected" : ""}>
+                ${translations[currentLanguage].equipmentOther}
+            </option>
+
+        </select>
+
+        <label>
+            ${translations[currentLanguage].equipmentNotes}
+        </label>
+
+        <input type="text"
+               class="equipment-notes"
+               value="${escapeHTML(notes)}"
+               placeholder="${translations[currentLanguage].equipmentNotesPlaceholder}">
+
+    `;
+
+    container.appendChild(item);
+}
+
+function removeEquipmentRow(button) {
+
+    button.closest(".equipment-item").remove();
+
+    if (
+        document.querySelectorAll(".equipment-item").length === 0
+    ) {
+
+        addEquipmentRow();
+
+    }
+
+}
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+/* FORM */
+
+function clearForm() {
+
+    document.getElementById("title").value = "";
+    document.getElementById("description").value = "";
+    document.getElementById("category").value = "Wedding";
+
+    document.getElementById("projectDate").value = "";
+    document.getElementById("projectLocation").value = "";
+    document.getElementById("clientName").value = "";
+
+    document.getElementById("projectStory").value = "";
+    document.getElementById("projectIdea").value = "";
+    document.getElementById("creativeVision").value = "";
+    document.getElementById("behindScenes").value = "";
+    document.getElementById("challenges").value = "";
+    document.getElementById("specialMoments").value = "";
+
+    document.getElementById("equipmentContainer").innerHTML = "";
+
+    addEquipmentRow();
+
+    document.getElementById("fileInput").value = "";
+
+    selectedFiles = [];
+
+    updateFileText();
+
+}
+
+function cancelEditing() {
+
+    editingWorkId = null;
+
+    clearForm();
+
+    document.getElementById("submitButton").textContent =
+        translations[currentLanguage].addButton;
+
+    document.getElementById("cancelEditButton").style.display =
+        "none";
+
+}
+
+/* EDIT PROJECT */
+
+async function editWork(work) {
+
+    try {
+
+        const { data: details, error } = await supabaseClient
+            .from("portfolio_project_details")
+            .select("*")
+            .eq("portfolio_work_id", work.id)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        editingWorkId = work.id;
+
+        fillProjectDetails(details, work);
+
+        document.getElementById("submitButton").textContent =
+            translations[currentLanguage].updateButton;
+
+        document.getElementById("cancelEditButton").style.display =
+            "block";
+
+        document.getElementById("title").scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+    } catch (error) {
+
+        console.error("Edit details error:", error);
+
+        alert("Could not load project details.");
+
+    }
+
+}
+
+function fillProjectDetails(details, work) {
+
+    document.getElementById("title").value =
+        work.title || "";
+
+    document.getElementById("description").value =
+        work.description || "";
+
+    document.getElementById("category").value =
+        work.category || "Other";
+
+    document.getElementById("projectDate").value =
+        details?.project_date || "";
+
+    document.getElementById("projectLocation").value =
+        details?.project_location || "";
+
+    document.getElementById("clientName").value =
+        details?.client_name || "";
+
+    document.getElementById("projectStory").value =
+        details?.project_story || "";
+
+    document.getElementById("projectIdea").value =
+        details?.project_idea || "";
+
+    document.getElementById("creativeVision").value =
+        details?.creative_vision || "";
+
+    document.getElementById("behindScenes").value =
+        details?.behind_the_scenes || "";
+
+    document.getElementById("challenges").value =
+        details?.challenges || "";
+
+    document.getElementById("specialMoments").value =
+        details?.special_moments || "";
+
+    const equipment = Array.isArray(details?.equipment)
+        ? details.equipment
+        : [];
+
+    const equipmentContainer =
+        document.getElementById("equipmentContainer");
+
+    equipmentContainer.innerHTML = "";
+
+    if (equipment.length > 0) {
+
+        equipment.forEach(item => addEquipmentRow(item));
+
+    } else {
+
+        addEquipmentRow();
+
+    }
+
+}
+/* LOAD PORTFOLIO */
+
+async function loadWorks() {
+
+    const gallery = document.getElementById("gallery");
+
+    gallery.innerHTML =
+        "<div class='empty-state'>" +
+        translations[currentLanguage].loading +
+        "</div>";
+
+    try {
+
+        const { data: works, error } = await supabaseClient
+            .from("portfolio_works")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        gallery.innerHTML = "";
+
+        if (!works || works.length === 0) {
+
+            gallery.innerHTML =
+                "<div class='empty-state'>" +
+                translations[currentLanguage].emptyState +
+                "</div>";
+
+            return;
+
+        }
+
+        works.forEach(work => {
+
+            const card = document.createElement("div");
+
+            card.className = "work-card";
+
+            const media = document.createElement(
+                work.media_type === "video"
+                    ? "video"
+                    : "img"
+            );
+
+            media.src = work.media_url;
+
+            if (work.media_type === "video") {
+
+                media.controls = true;
+
+            } else {
+
+                media.alt = work.title;
+
+            }
+
+            const info = document.createElement("div");
+
+            info.className = "work-info";
+
+            const heading = document.createElement("h3");
+
+            heading.textContent = work.title;
+
+            const description = document.createElement("p");
+
+            description.textContent =
+                (work.description || "") +
+                " | " +
+                (work.category || "");
+
+            const buttons = document.createElement("div");
+
+            buttons.className = "card-buttons";
+
+            const editButton = document.createElement("button");
+
+            editButton.className = "edit-button";
+
+            editButton.textContent =
+                translations[currentLanguage].editButton;
+
+            editButton.onclick = () => editWork(work);
+
+            const deleteButton = document.createElement("button");
+
+            deleteButton.className = "delete-button";
+
+            deleteButton.textContent =
+                translations[currentLanguage].deleteButton;
+
+            deleteButton.onclick = () => deleteWork(work, card);
+
+            buttons.appendChild(editButton);
+            buttons.appendChild(deleteButton);
+
+            info.appendChild(heading);
+            info.appendChild(description);
+            info.appendChild(buttons);
+
+            card.appendChild(media);
+            card.appendChild(info);
+
+            gallery.appendChild(card);
+
+        });
+
+    } catch (error) {
+
+        console.error("Load portfolio error:", error);
+
+        gallery.innerHTML =
+            "<div class='empty-state'>" +
+            translations[currentLanguage].loadError +
+            "</div>";
+
+    }
+
+}
+
+/* ADD PROJECT */
+
+async function addWork() {
+
+    const title =
+        document.getElementById("title").value.trim();
+
+    const description =
+        document.getElementById("description").value.trim();
+
+    const category =
+        document.getElementById("category").value;
+
+    const lang =
+        translations[currentLanguage];
+
+    if (!title) {
+
+        alert(lang.selectTitle);
+
+        return;
+
+    }
+
+    // If editing an existing project
+    if (editingWorkId !== null) {
+
+        await updateProjectDetails(editingWorkId);
+
+        return;
+
+    }
+
+    if (selectedFiles.length === 0) {
+
+        alert(lang.selectFiles);
+
+        return;
+
+    }
+
+    const button =
+        document.getElementById("submitButton");
+
+    button.disabled = true;
+
+    button.textContent = lang.uploading;
+
+    try {
+
+        const uploadedUrls = [];
+
+        // Upload all selected files
+        for (const file of selectedFiles) {
+
+            const safeName =
+                file.name.replace(/[^\w.-]/g, "_");
+
+            const fileName =
+                Date.now() +
+                "_" +
+                Math.random().toString(36).substring(2, 8) +
+                "_" +
+                safeName;
+
+            const { error: uploadError } =
+                await supabaseClient.storage
+                    .from("portfolio-media")
+                    .upload(fileName, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: publicData } =
+                supabaseClient.storage
+                    .from("portfolio-media")
+                    .getPublicUrl(fileName);
+
+            uploadedUrls.push({
+
+                url: publicData.publicUrl,
+
+                type: file.type.startsWith("video/")
+                    ? "video"
+                    : "image"
+
+            });
+
+        }
+
+        const projectDetails = {
+
+            project_type: category,
+
+            project_date:
+                document.getElementById("projectDate").value || null,
+
+            project_location:
+                document.getElementById("projectLocation").value.trim() || null,
+
+            client_name:
+                document.getElementById("clientName").value.trim() || null,
+
+            project_story:
+                document.getElementById("projectStory").value.trim() || null,
+
+            project_idea:
+                document.getElementById("projectIdea").value.trim() || null,
+
+            behind_the_scenes:
+                document.getElementById("behindScenes").value.trim() || null,
+
+            creative_vision:
+                document.getElementById("creativeVision").value.trim() || null,
+
+            challenges:
+                document.getElementById("challenges").value.trim() || null,
+
+            special_moments:
+                document.getElementById("specialMoments").value.trim() || null,
+
+            equipment: getEquipmentObject(),
+
+            gallery_urls: uploadedUrls
+
+        };
+
+        // Create a portfolio work for every selected file
+        for (const media of uploadedUrls) {
+
+            const { data: insertedWork, error: insertError } =
+                await supabaseClient
+                    .from("portfolio_works")
+                    .insert({
+
+                        title: title,
+
+                        description: description,
+
+                        category: category,
+
+                        media_type: media.type,
+
+                        media_url: media.url
+
+                    })
+                    .select()
+                    .single();
+
+            if (insertError) throw insertError;
+
+            // Save project details connected to the work ID
+            const { error: detailsError } =
+                await supabaseClient
+                    .from("portfolio_project_details")
+                    .insert({
+
+                        portfolio_work_id: insertedWork.id,
+
+                        ...projectDetails
+
+                    });
+
+            if (detailsError) throw detailsError;
+
+        }
+
+        clearForm();
+
+        await loadWorks();
+
+        alert(lang.addedMessage);
+
+    } catch (error) {
+
+        console.error("Upload error:", error);
+
+        alert(lang.uploadError);
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            translations[currentLanguage].addButton;
+
+    }
+
+}
+
+/* UPDATE PROJECT */
+
+async function updateProjectDetails(workId) {
+
+    const button =
+        document.getElementById("submitButton");
+
+    button.disabled = true;
+
+    button.textContent =
+        translations[currentLanguage].uploading;
+
+    try {
+
+        const title =
+            document.getElementById("title").value.trim();
+
+        const description =
+            document.getElementById("description").value.trim();
+
+        const category =
+            document.getElementById("category").value;
+
+        // Update portfolio work
+        const { error: workError } =
+            await supabaseClient
+                .from("portfolio_works")
+                .update({
+
+                    title: title,
+
+                    description: description,
+
+                    category: category
+
+                })
+                .eq("id", workId);
+
+        if (workError) throw workError;
+
+        // Load existing gallery data
+        const { data: existingDetails, error: selectError } =
+            await supabaseClient
+                .from("portfolio_project_details")
+                .select("gallery_urls")
+                .eq("portfolio_work_id", workId)
+                .maybeSingle();
+
+        if (selectError) throw selectError;
+
+        const projectDetails = {
+
+            portfolio_work_id: workId,
+
+            project_type: category,
+
+            project_date:
+                document.getElementById("projectDate").value || null,
+
+            project_location:
+                document.getElementById("projectLocation").value.trim() || null,
+
+            client_name:
+                document.getElementById("clientName").value.trim() || null,
+
+            project_story:
+                document.getElementById("projectStory").value.trim() || null,
+
+            project_idea:
+                document.getElementById("projectIdea").value.trim() || null,
+
+            behind_the_scenes:
+                document.getElementById("behindScenes").value.trim() || null,
+
+            creative_vision:
+                document.getElementById("creativeVision").value.trim() || null,
+
+            challenges:
+                document.getElementById("challenges").value.trim() || null,
+
+            special_moments:
+                document.getElementById("specialMoments").value.trim() || null,
+
+            equipment: getEquipmentObject(),
+
+            gallery_urls:
+                existingDetails?.gallery_urls || [],
+
+            updated_at:
+                new Date().toISOString()
+
+        };
+
+        const { error: saveError } =
+            await supabaseClient
+                .from("portfolio_project_details")
+                .upsert(projectDetails, {
+                    onConflict: "portfolio_work_id"
+                });
+
+        if (saveError) throw saveError;
+
+        editingWorkId = null;
+
+        clearForm();
+
+        document.getElementById("submitButton").textContent =
+            translations[currentLanguage].addButton;
+
+        document.getElementById("cancelEditButton").style.display =
+            "none";
+
+        await loadWorks();
+
+        alert(translations[currentLanguage].updatedMessage);
+
+    } catch (error) {
+
+        console.error("Update project error:", error);
+
+        alert(translations[currentLanguage].uploadError);
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            editingWorkId === null
+                ? translations[currentLanguage].addButton
+                : translations[currentLanguage].updateButton;
+
+    }
+
+}
+
+/* DELETE WORK */
+
+async function deleteWork(work, card) {
+
+    if (!confirm(translations[currentLanguage].deleteConfirm)) {
+        return;
+    }
+
+    try {
+
+        const storagePath =
+            getStoragePath(work.media_url);
+
+        if (storagePath) {
+
+            const { error: storageError } =
+                await supabaseClient.storage
+                    .from("portfolio-media")
+                    .remove([storagePath]);
+
+            if (storageError) {
+
+                console.error(
+                    "Storage deletion error:",
+                    storageError
+                );
+
+            }
+
+        }
+
+        // Project details are deleted automatically by ON DELETE CASCADE
+        const { error: dbError } =
+            await supabaseClient
+                .from("portfolio_works")
+                .delete()
+                .eq("id", work.id);
+
+        if (dbError) throw dbError;
+
+        card.remove();
+
+        if (
+            document.getElementById("gallery").children.length === 0
+        ) {
+
+            document.getElementById("gallery").innerHTML =
+                "<div class='empty-state'>" +
+                translations[currentLanguage].emptyState +
+                "</div>";
+
+        }
+
+        alert("Work deleted successfully!");
+
+    } catch (error) {
+
+        console.error("Delete failed:", error);
+
+        alert(translations[currentLanguage].deleteError);
+
+    }
+
+}
+
+/* ADMIN AUTHENTICATION */
+
+// Only this email is allowed to access the admin dashboard.
+// If your newly created admin account uses a different email, change it here.
+const ADMIN_EMAIL = "hahsemtarawneh99@gmail.com";
+
+const loginScreen = document.getElementById("loginScreen");
+const adminDashboard = document.getElementById("adminDashboard");
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
+const logoutButton = document.getElementById("logoutButton");
+
+function showLogin(message = "") {
+    loginScreen.style.display = "flex";
+    adminDashboard.style.display = "none";
+    logoutButton.style.display = "none";
+    loginMessage.textContent = message;
+}
+
+function showAdmin() {
+    loginScreen.style.display = "none";
+    adminDashboard.style.display = "block";
+    logoutButton.style.display = "inline-block";
+    addEquipmentRow();
+    loadWorks();
+}
+
+loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    loginMessage.textContent = "Signing in...";
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+
+    if (email !== ADMIN_EMAIL.toLowerCase()) {
+        loginMessage.textContent = "This email is not authorized for the admin dashboard.";
+        return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+        loginMessage.textContent = "Login failed. Check your email and password.";
+        console.error("Admin login error:", error);
+        return;
+    }
+
+    if (data.user?.email?.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        await supabaseClient.auth.signOut();
+        showLogin("This account is not authorized.");
+        return;
+    }
+
+    loginForm.reset();
+    showAdmin();
+});
+
+async function logoutAdmin() {
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) console.error("Logout error:", error);
+    showLogin("You have been logged out.");
+}
+
+// Restore a valid session after refresh, and react to sign-in/sign-out.
+(async function checkAdminSession() {
+    const { data, error } = await supabaseClient.auth.getSession();
+    if (error) {
+        console.error("Session check error:", error);
+        showLogin();
+        return;
+    }
+
+    const user = data.session?.user;
+    if (user && user.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        showAdmin();
+    } else {
+        if (user) await supabaseClient.auth.signOut();
+        showLogin();
+    }
+})();
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") showLogin();
+    if (event === "SIGNED_IN" && session?.user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+        showAdmin();
+    }
+});
+
+</script>
+
+</body>
+</html>

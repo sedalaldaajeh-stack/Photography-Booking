@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Hashim</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .project-page {
+            padding: 100px 7%;
+            background: #F7F2EA;
+            color: #40352D;
+            min-height: 100vh;
+        }
+
+        .project-back {
+            display: inline-block;
+            margin-bottom: 40px;
+            color: #A98B70;
+            text-decoration: none;
+        }
+
+        .project-header {
+            margin-bottom: 50px;
+        }
+
+        .project-header h1 {
+            font-size: clamp(40px, 7vw, 80px);
+            margin: 20px 0;
+        }
+
+        .project-header h1 span {
+            color: #D68A72;
+        }
+
+        .project-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            color: #897766;
+            margin: 25px 0;
+        }
+
+        .project-description {
+            max-width: 750px;
+            line-height: 1.9;
+            font-size: 17px;
+        }
+
+        .project-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 50px 0;
+        }
+
+        .project-gallery img,
+        .project-gallery video {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+            background: #E8D9C6;
+        }
+
+        .project-gallery .gallery-large {
+            grid-column: span 2;
+        }
+
+        .project-section {
+            padding: 40px 0;
+            border-top: 1px solid #D7C5B1;
+        }
+
+        .project-section h2 {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+
+        .project-section p {
+            line-height: 1.9;
+            max-width: 850px;
+            white-space: pre-wrap;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .equipment-card {
+            padding: 20px;
+            background: #EFE5D8;
+            border-radius: 8px;
+        }
+
+        .equipment-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .equipment-card p {
+            font-size: 14px;
+        }
+
+        .project-loading {
+            text-align: center;
+            padding: 100px 20px;
+        }
+
+        .project-footer {
+            background: #40352D;
+            color: #F7F2EA;
+            padding: 35px 7%;
+            text-align: center;
+        }
+
+        .project-footer p {
+            margin: 8px 0;
+        }
+
+        .project-footer .designer {
+            color: #D8C2A8;
+            margin-top: 20px;
+        }
+
+        @media(max-width: 700px) {
+            .project-page {
+                padding: 60px 5%;
+            }
+
+            .project-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .project-gallery .gallery-large {
+                grid-column: span 1;
+            }
+
+            .project-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="project-page">
+
+        <a href="index.html#work" class="project-back">
+            ← Back to Portfolio
+        </a>
+
+        <div id="project-content">
+
+            <div class="project-loading">
+                Loading project...
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="project-footer">
+
+        <p>HASHIM. — Visual Stories</p>
+
+        <p class="designer">Designed & Developed by</p>
+
+        <p><strong>Sedal Al-Dajjah</strong></p>
+
+        <p>© 2026 — All Rights Reserved</p>
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <script>
+
+    document.addEventListener("DOMContentLoaded", loadProject);
+
+    async function loadProject() {
+
+        const content = document.getElementById("project-content");
+
+        const params = new URLSearchParams(window.location.search);
+
+        const projectId = params.get("id");
+
+        if (!projectId) {
+
+            content.innerHTML = "<h2>Project not found.</h2>";
+
+            return;
+
+        }
+
+        try {
+
+            // Load portfolio work
+            const { data: work, error: workError } =
+                await supabaseClient
+                    .from("portfolio_works")
+                    .select("*")
+                    .eq("id", projectId)
+                    .single();
+
+            if (workError) throw workError;
+
+            // Load project details
+            const { data: details, error: detailsError } =
+                await supabaseClient
+                    .from("portfolio_project_details")
+                    .select("*")
+                    .eq("portfolio_work_id", projectId)
+                    .maybeSingle();
+
+            if (detailsError) throw detailsError;
+
+            renderProject(work, details);
+
+        } catch (error) {
+
+            console.error("Project loading error:", error);
+
+            content.innerHTML =
+                "<h2>Could not load project.</h2>";
+
+        }
+
+    }
+
+    function renderProject(work, details) {
+
+        const content = document.getElementById("project-content");
+
+        const gallery = Array.isArray(details?.gallery_urls)
+            ? details.gallery_urls
+            : [];
+
+        const equipment = Array.isArray(details?.equipment)
+            ? details.equipment
+            : [];
+
+        const mediaItems = [];
+
+        // Current work media
+        mediaItems.push({
+            url: work.media_url,
+            type: work.media_type
+        });
+
+        // Other gallery media
+        gallery.forEach(item => {
+
+            if (
+                item.url &&
+                item.url !== work.media_url
+            ) {
+
+                mediaItems.push(item);
+
+            }
+
+        });
+
+        content.innerHTML = `
+
+            <div class="project-header">
+
+                <p class="section-label">
+                    ${escapeHTML(work.category || "PROJECT")}
+                </p>
+
+                <h1>
+                    ${escapeHTML(work.title || "Untitled")}
+                    <span>.</span>
+                </h1>
+
+                <div class="project-meta">
+
+                    ${details?.project_date
+                        ? `<span>📅 ${escapeHTML(details.project_date)}</span>`
+                        : ""}
+
+                    ${details?.project_location
+                        ? `<span>📍 ${escapeHTML(details.project_location)}</span>`
+                        : ""}
+
+                    ${details?.client_name
+                        ? `<span>CLIENT: ${escapeHTML(details.client_name)}</span>`
+                        : ""}
+
+                </div>
+
+                <p class="project-description">
+                    ${escapeHTML(work.description || "")}
+                </p>
+
+            </div>
+
+            <div class="project-gallery" id="projectGallery"></div>
+
+            ${section("The Story", details?.project_story)}
+
+            ${section("Project Idea", details?.project_idea)}
+
+            ${section("Creative Vision", details?.creative_vision)}
+
+            ${section("Behind the Scenes", details?.behind_the_scenes)}
+
+            ${section("Challenges", details?.challenges)}
+
+            ${section("Special Moments", details?.special_moments)}
+
+            ${equipmentSection(equipment)}
+
+        `;
+
+        const galleryContainer =
+            document.getElementById("projectGallery");
+
+        mediaItems.forEach((item, index) => {
+
+            const media = document.createElement(
+                item.type === "video" ? "video" : "img"
+            );
+
+            media.src = item.url;
+
+            if (item.type === "video") {
+
+                media.controls = true;
+
+                media.preload = "metadata";
+
+            } else {
+
+                media.alt = work.title;
+
+                media.loading = "lazy";
+
+            }
+
+            if (index === 0) {
+                media.className = "gallery-large";
+            }
+
+            galleryContainer.appendChild(media);
+
+        });
+
+    }
+
+    function section(title, text) {
+
+        if (!text) return "";
+
+        return `
+
+            <section class="project-section">
+
+                <h2>${title}</h2>
+
+                <p>${escapeHTML(text)}</p>
+
+            </section>
+
+        `;
+
+    }
+
+    function equipmentSection(equipment) {
+
+        if (!equipment || equipment.length === 0) {
+            return "";
+        }
+
+        let cards = "";
+
+        equipment.forEach(item => {
+
+            cards += `
+
+                <div class="equipment-card">
+
+                    <h3>${escapeHTML(item.name || "")}</h3>
+
+                    <p>
+                        ${escapeHTML(item.type || "")}
+                    </p>
+
+                    ${item.notes
+                        ? `<p>${escapeHTML(item.notes)}</p>`
+                        : ""}
+
+                </div>
+
+            `;
+
+        });
+
+        return `
+
+            <section class="project-section">
+
+                <h2>Equipment Used</h2>
+
+                <div class="equipment-grid">
+
+                    ${cards}
+
+                </div>
+
+            </section>
+
+        `;
+
+    }
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+    </script>
+
+</body>
+</html>
